@@ -1,0 +1,323 @@
+---
+import "../../styles/global.css";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+
+/** Genera las páginas estáticas para cada plan */
+export function getStaticPaths() {
+  return ["basico", "profesional", "premium"].map((p) => ({
+    params: { plan: p },
+  }));
+}
+
+const { plan } = Astro.params;
+
+// Cambia tu WhatsApp aquí:
+const whatsapp = "59170000000";
+
+const PLANS = {
+  basico: {
+    slug: "basico",
+    title: "Plan Básico",
+    price: "350–500 Bs",
+    summary:
+      "Página simple (1–3 secciones) para presentar tu negocio con buena imagen y contacto directo.",
+    bullets: [
+      "Diseño profesional y adaptable a celular",
+      "Contacto por WhatsApp o formulario",
+      "Visible en Google (básico)",
+      "Optimización de imágenes",
+      "Hosting y dominio opcional",
+    ],
+    entregables: [
+      "Home + hasta 2 secciones",
+      "Favicons y metadatos",
+      "Implementación en tu dominio",
+      "Mini manual de uso (PDF)",
+    ],
+    noIncluye: [
+      "Panel para editar contenido",
+      "Tienda/Reservas",
+      "Integraciones con APIs",
+    ],
+    proceso: [
+      "Hablemos de tu negocio y objetivos",
+      "Propuesta visual y ajustes",
+      "Construcción y pruebas",
+      "Publicación con seguridad",
+    ],
+    cta: "Quiero el Básico",
+  },
+  profesional: {
+    slug: "profesional",
+    title: "Plan Profesional",
+    price: "800–1200 Bs",
+    summary:
+      "Sitio administrable (5–8 secciones) para crecer sin depender de terceros.",
+    bullets: [
+      "Panel para editar textos e imágenes",
+      "Dominio 1 año y seguridad (HTTPS)",
+      "Blog/Noticias opcional",
+      "Buen rendimiento y respaldo",
+    ],
+    entregables: [
+      "Diseño + 5–8 secciones",
+      "Capacitación corta (video o PDF)",
+      "Backups automáticos en servidor",
+      "Métricas (opcional)",
+    ],
+    noIncluye: [
+      "Tienda completa (se cotiza aparte)",
+      "Integraciones complejas (CRMs, pagos avanzados)",
+    ],
+    proceso: [
+      "Kickoff y alcance",
+      "Estructura del sitio y diseño",
+      "Carga de contenido y QA",
+      "Publicación y capacitación",
+    ],
+    cta: "Cotizar Profesional",
+  },
+  premium: {
+    slug: "premium",
+    title: "Plan Premium",
+    price: "1500–2500+ Bs",
+    summary: "Tienda online o sistema de reservas con funciones avanzadas.",
+    bullets: [
+      "Catálogo, carrito y pagos / Reservas con agenda",
+      "Descuentos, reportes y avisos por correo",
+      "Integración con WhatsApp y redes",
+      "Backups y seguridad",
+    ],
+    entregables: [
+      "Arquitectura y flujos a medida",
+      "Panel de gestión",
+      "Capacitación del equipo",
+      "Plan de respaldo",
+    ],
+    noIncluye: [
+      "Facturación electrónica (salvo integración)",
+      "App móvil nativa",
+    ],
+    proceso: [
+      "Descubrimiento y alcance",
+      "Diseño de experiencia",
+      "Desarrollo iterativo",
+      "Go-live y monitoreo",
+    ],
+    cta: "Hablemos del Premium",
+  },
+};
+
+const data = PLANS[plan];
+if (!data) return Astro.redirect("/planes/basico");
+
+const SIMILARES = Object.values(PLANS).filter((p) => p.slug !== plan);
+---
+
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LLAMACODE | {data.title}</title>
+    <meta name="description" content={data.summary} />
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <Header />
+
+    <main>
+      <!-- HERO del plan -->
+      <section class="hero">
+        <div
+          class="container section grid md:grid-cols-2 gap-8 md:gap-10 items-center"
+        >
+          <div class="reveal text-center md:text-left">
+            <a
+              href="/#planes"
+              class="inline-flex items-center gap-2 text-sm font-medium rounded-full px-3 py-1.5
+                bg-brand-100 text-brand-700 hover:bg-brand-200 transition"
+            >
+              <span aria-hidden="true">←</span> Volver a planes
+            </a>
+
+            <h1 class="mt-3 text-3xl md:text-5xl font-extrabold leading-tight">
+              {data.title}
+            </h1>
+            <p class="mt-3 text-base md:text-lg text-gray-600">
+              {data.summary}
+            </p>
+
+            <div
+              class="mt-4 md:mt-5 flex flex-col sm:flex-row items-center gap-3 md:gap-4"
+            >
+              <div class="price text-3xl md:text-4xl">{data.price}</div>
+              <a
+                href={`https://wa.me/${whatsapp}`}
+                target="_blank"
+                rel="noopener"
+                class="w-full sm:w-auto btn btn-primary rounded-md px-5 py-3 text-center"
+                >{data.cta}</a
+              >
+            </div>
+
+            <div class="mt-5 grid sm:grid-cols-2 gap-3">
+              {
+                data.bullets.map((b) => (
+                  <div class="card p-4 text-sm flex items-start gap-2">
+                    <span class="h-6 w-6 rounded-full bg-brand-100 flex items-center justify-center text-xs">
+                      ✔
+                    </span>
+                    <span>{b}</span>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Ilustración / placeholder -->
+          <div class="reveal md:justify-self-end hidden md:block">
+            <div
+              class="aspect-video w-full max-w-[560px] rounded-2xl shadow-xl ring-1 ring-black/5
+                  bg-gradient-to-br from-brand-200 via-brand-400 to-brand-600"
+            >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Entregables + No incluye -->
+      <section class="section">
+        <div class="container grid md:grid-cols-2 gap-8">
+          <div class="reveal card p-4 md:p-6">
+            <h2 class="text-2xl font-bold">Entregables</h2>
+            <ul class="mt-3 space-y-2 text-sm">
+              {data.entregables.map((e) => <li>• {e}</li>)}
+            </ul>
+          </div>
+          <div class="reveal card p-4 md:p-6">
+            <h2 class="text-2xl font-bold">No incluye</h2>
+            <ul class="mt-3 space-y-2 text-sm">
+              {data.noIncluye.map((e) => <li>• {e}</li>)}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Proceso (sin números, con iconitos) -->
+      <section class="section">
+        <div class="container">
+          <h2 class="text-2xl font-bold reveal">¿Cómo lo hacemos?</h2>
+          <div class="mt-4 grid md:grid-cols-3 gap-6">
+            <div class="reveal card p-4 md:p-6">
+              <div
+                class="h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center mb-3 text-lg"
+              >
+                💬
+              </div>
+              <h3 class="font-semibold">Conversamos y definimos</h3>
+              <p class="text-sm text-gray-600 mt-1">
+                Objetivos, estilo y contenido clave.
+              </p>
+            </div>
+            <div class="reveal card p-4 md:p-6">
+              <div
+                class="h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center mb-3 text-lg"
+              >
+                🎨
+              </div>
+              <h3 class="font-semibold">Diseñamos tu sitio</h3>
+              <p class="text-sm text-gray-600 mt-1">
+                Propuesta visual, ajustes y aprobación.
+              </p>
+            </div>
+            <div class="reveal card p-4 md:p-6">
+              <div
+                class="h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center mb-3 text-lg"
+              >
+                🚀
+              </div>
+              <h3 class="font-semibold">Publicamos y acompañamos</h3>
+              <p class="text-sm text-gray-600 mt-1">
+                Lanzamiento seguro y soporte continuo.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="section">
+        <div class="container">
+          <div class="card p-4 md:p-6">
+            <div
+              class="flex flex-col md:flex-row md:items-center md:justify-between gap-3"
+            >
+              <div class="min-w-0">
+                <h3 class="font-bold text-lg">
+                  ¿Listo para {data.title.toLowerCase()}?
+                </h3>
+                <p class="text-sm text-gray-600">
+                  Escríbenos por WhatsApp y armamos tu propuesta.
+                </p>
+              </div>
+
+              <a
+                href={`https://wa.me/${whatsapp}`}
+                target="_blank"
+                rel="noopener"
+                class="btn btn-primary rounded-md px-5 py-3 text-center w-full md:w-auto shrink-0"
+              >
+                Contactar por WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Modelos similares -->
+      <section class="section">
+        <div class="container">
+          <h2 class="text-2xl font-bold reveal">Modelos similares</h2>
+          <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {
+              SIMILARES.map((p) => (
+                <a
+                  href={`/planes/${p.slug}`}
+                  class="reveal card overflow-hidden group block"
+                >
+                  <div
+                    class="aspect-[4/3] bg-gradient-to-br from-brand-50 to-brand-100
+                            group-hover:from-brand-100 group-hover:to-brand-200 transition"
+                  />
+                  <div class="p-4">
+                    <div class="font-semibold">{p.title}</div>
+                    <div class="text-sm text-gray-600">{p.summary}</div>
+                  </div>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+
+    <!-- Reveal on scroll -->
+    <script>
+      const els = document.querySelectorAll(".reveal");
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.08 },
+      );
+      els.forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

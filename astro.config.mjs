@@ -1,5 +1,8 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
+import tailwind from '@tailwindcss/vite';
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  server: { host: true },
+  site: 'http://localhost:4321', // luego lo cambias por tu dominio
+  vite: { plugins: [tailwind()] }
+});

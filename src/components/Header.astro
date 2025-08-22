@@ -1,0 +1,123 @@
+---
+---
+<header id="site-header" class="sticky top-0 z-40 header-glass header-line transition-shadow">
+  <div class="container py-3 flex items-center">
+    <!-- Marca -->
+    <a href="/" class="flex items-center gap-2 shrink-0">
+      <img src="/logo.png" alt="LLAMACODE" class="h-8 w-auto" />
+      <span class="font-semibold tracking-wide">LLAMACODE</span>
+    </a>
+
+    <!-- Desktop: menú a la DERECHA -->
+    <nav class="hidden md:flex items-center gap-6 text-sm ml-auto mr-4">
+      <a href="/#servicios" class="navlink">Servicios</a>
+      <a href="/#planes" class="navlink">Planes</a>
+      <a href="/#metodo" class="navlink">Proceso</a>
+      <a href="/#faq" class="navlink">FAQ</a>
+      <a href="/#contacto" class="navlink">Contacto</a>
+    </nav>
+
+    <a href="/#contacto" class="hidden md:inline-flex items-center rounded-md px-4 py-2 text-sm btn btn-primary">
+      Cotizar
+    </a>
+
+    <!-- Botón móvil -->
+    <button id="menuBtn"
+      class="md:hidden ml-auto inline-flex items-center justify-center h-10 w-10 rounded-md ring-1 ring-black/10">
+      <span class="sr-only">Abrir menú</span> ☰
+    </button>
+  </div>
+</header>
+
+<script>
+  // Sombra en scroll
+  const header = document.getElementById('site-header');
+  const onScroll = () => header.classList.toggle('is-scrolled', scrollY > 6);
+  onScroll(); addEventListener('scroll', onScroll, { passive: true });
+
+  // ----- Drawer móvil montado en <body> con estilos propios (no Tailwind en strings) -----
+  const openBtn = document.getElementById('menuBtn');
+
+  function ensureDrawer() {
+    let root = document.getElementById('lc-mobile-root');
+    if (root) return root;
+
+    const css = `
+      #lc-mobile-root{position:fixed;inset:0;z-index:100;display:none}
+      #lc-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:0;transition:opacity .2s}
+      #lc-drawer{position:absolute;top:0;right:0;height:100%;width:18rem;background:#fff;box-shadow:0 10px 25px rgba(0,0,0,.15);
+                 transform:translateX(100%);transition:transform .2s;display:flex;flex-direction:column;padding:1rem;gap:.5rem}
+      #lc-drawer .row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+      #lc-close{height:2rem;width:2rem;border-radius:.5rem;border:1px solid rgba(0,0,0,.1);background:#fff}
+      #lc-link{padding:.5rem 0;display:block;color:#111827;text-decoration:none}
+      #lc-cta{margin-top:.5rem;display:block;text-align:center;padding:.6rem 1rem;border-radius:.5rem;color:#fff;background:#0b74b7}
+      @media (prefers-reduced-motion:reduce){
+        #lc-overlay{transition:none} #lc-drawer{transition:none}
+      }
+    `;
+    const style = document.createElement('style'); style.textContent = css;
+    document.head.appendChild(style);
+
+    const markup = `
+      <div id="lc-mobile-root" aria-hidden="true">
+        <div id="lc-overlay"></div>
+        <nav id="lc-drawer" aria-label="Menú móvil">
+          <div class="row">
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <img src="/logo.png" alt="" style="height:24px;width:auto"/>
+              <strong>LLAMACODE</strong>
+            </div>
+            <button id="lc-close" aria-label="Cerrar">✕</button>
+          </div>
+          <a id="lc-link" href="/#servicios">Servicios</a>
+          <a id="lc-link" href="/#planes">Planes</a>
+          <a id="lc-link" href="/#metodo">Proceso</a>
+          <a id="lc-link" href="/#faq">FAQ</a>
+          <a id="lc-link" href="/#contacto">Contacto</a>
+          <a id="lc-cta"  href="/#contacto">Cotizar</a>
+        </nav>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', markup);
+    return document.getElementById('lc-mobile-root');
+  }
+
+  function openMenu() {
+    const root = ensureDrawer();
+    const overlay = document.getElementById('lc-overlay');
+    const drawer  = document.getElementById('lc-drawer');
+
+    root.style.display = 'block';
+    requestAnimationFrame(() => {
+      overlay.style.opacity = '1';
+      drawer.style.transform = 'translateX(0)';
+    });
+    document.body.style.overflow = 'hidden';
+
+    const close = () => {
+      overlay.style.opacity = '0';
+      drawer.style.transform = 'translateX(100%)';
+      setTimeout(() => { root.style.display = 'none'; }, 200);
+      document.body.style.overflow = '';
+    };
+
+    document.getElementById('lc-close').onclick = close;
+    overlay.onclick = close;
+    addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); }, { once:true });
+
+    // Cerrar y scroll suave si estamos en "/"
+    root.querySelectorAll('a[href^="/#"]').forEach(a=>{
+      a.addEventListener('click',(e)=>{
+        const id=a.getAttribute('href').slice(2);
+        if(location.pathname==='/'){
+          const t=document.getElementById(id);
+          if(t){ e.preventDefault(); close(); t.scrollIntoView({behavior:'smooth',block:'start'}); }
+        }else{
+          close();
+        }
+      },{ once:true });
+    });
+  }
+
+  openBtn?.addEventListener('click', openMenu);
+</script>

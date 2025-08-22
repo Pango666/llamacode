@@ -1,0 +1,80 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+/* ===== Branding LLAMACODE ===== */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  --color-brand-50:  #f0f9ff;
+  --color-brand-100: #e0f2fe;
+  --color-brand-200: #bae6fd;
+  --color-brand-300: #7dd3fc;
+  --color-brand-400: #38bdf8;
+  --color-brand-500: #0ea5e9;
+  --color-brand-600: #0284c7;   /* primario */
+  --color-brand-700: #0369a1;   /* hover/énfasis */
+  --color-accent-600:#16a34a;   /* acentos verdes para badges/botones secundarios */
+  /*--color-brand-50:  #f0f9ff;
+  --color-brand-100: #e0f2fe;
+  --color-brand-200: #bae6fd;
+  --color-brand-300: #7dd3fc;
+  --color-brand-400: #38bdf8;
+  --color-brand-500: #0ea5e9;
+  --color-brand-600: #0284c7;   /* primario */
+  /*--color-brand-700: #0369a1;   /* hover/énfasis */
+  /*--color-accent-600:#16a34a;   /* acentos verdes para badges/botones secundarios */
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-sans); color: #0f172a; }
+html, body { overflow-x: hidden; }
+
+/* Layout helpers */
+.container { margin-inline: auto; max-width: 72rem; padding-inline: 1rem; }
+.section { padding-block: 4.5rem; }
+.section + .section { border-top: 1px solid rgba(2,6,23,.06); }
+
+/* Header glass */
+.header-glass { background: color-mix(in oklab, white 86%, transparent); backdrop-filter: blur(10px); }
+.header-line   { box-shadow: inset 0 -1px 0 rgba(2,6,23,.08); }
+.is-scrolled   { box-shadow: 0 8px 20px rgba(2,6,23,.06); }
+
+/* Hero blobs */
+.hero { position: relative; isolation: isolate; overflow: hidden; }
+.hero::before,.hero::after{
+  content:""; position:absolute; inset:-15% -15% auto auto; z-index:-1; width:40vmax; height:40vmax; border-radius:50%;
+  filter:blur(60px); opacity:.35; pointer-events:none;
+}
+.hero::before{ background: radial-gradient(circle at 30% 30%, var(--color-brand-200), transparent 60%); animation: float 10s ease-in-out infinite; }
+.hero::after { background: radial-gradient(circle at 70% 40%, var(--color-brand-300), transparent 60%); animation: float 12s ease-in-out infinite reverse; }
+
+.card { background:#fff; border:1px solid rgba(2,6,23,.08); border-radius:1rem; box-shadow:0 8px 24px rgba(2,6,23,.04); transition:transform .25s, box-shadow .25s; }
+.card:hover { transform: translateY(-4px); box-shadow:0 12px 28px rgba(2,6,23,.08); }
+
+.price { font-weight:800; letter-spacing:-.02em; }
+
+/* Buttons */
+.btn{ transition: transform .08s ease, box-shadow .2s ease; }
+.btn:active{ transform: translateY(1px) scale(.99); }
+.btn-primary{ background: var(--color-brand-600); color:#fff; }
+.btn-primary:hover{ background: var(--color-brand-700); }
+.btn-ghost{ border:1px solid rgba(2,6,23,.12); }
+.badge{ background: var(--color-accent-600); color:#fff; font-size:.7rem; padding:.3rem .5rem; border-radius:999px; }
+
+/* Nav underline */
+.navlink{ position:relative; }
+.navlink::after{ content:""; position:absolute; left:0; right:0; bottom:-6px; height:2px; background: var(--color-brand-600); transform:scaleX(0); transform-origin:left; transition:transform .25s; }
+.navlink:hover::after{ transform:scaleX(1); }
+
+/* Reveal */
+@media (prefers-reduced-motion:no-preference){
+  .reveal{ opacity:0; transform:translateY(12px); transition:opacity .5s, transform .5s; }
+  .reveal.in{ opacity:1; transform:none; }
+}
+@keyframes float{0%{transform:translate3d(0,0,0)}50%{transform:translate3d(0,8px,0)}100%{transform:translate3d(0,0,0)}}
+
+/* Anchors offset */
+[id]{ scroll-margin-top: 86px; }
+
+@media (max-width: 640px) {
+  .section { padding-top: 2.25rem; padding-bottom: 2.25rem; }
+  .card { border-radius: 16px; }
+}
